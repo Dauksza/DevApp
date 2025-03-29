@@ -4,7 +4,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain_openai import ChatOpenAI
 
 model = ChatOpenAI(
-    model=os.getenv("MODEL_NAME"),
+    model="mistral-large-latest",
     temperature=0.1,
     callbacks=[StreamingStdOutCallbackHandler()],
     streaming=True,

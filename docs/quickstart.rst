@@ -22,12 +22,12 @@ Choose one of the following:
 
   .. code-block:: console
 
-      $ export OPENAI_API_KEY=[your api key]
+      $ export MISTRAL_API_KEY=[your api key]
 
 - Add it to the ``.env`` file:
 
   - Create a copy of ``.env.template`` named ``.env``
-  - Add your ``OPENAI_API_KEY`` in .env
+  - Add your ``MISTRAL_API_KEY`` in .env
 
 - If you want to use a custom model, visit our docs on `using open models and azure models <./open_models.html>`_.
 

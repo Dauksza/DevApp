@@ -11,6 +11,7 @@ services:
     ##  OR set the API key directly
     # environment:
       # - OPENAI_API_KEY=YOUR_API_KEY
+      # - MISTRAL_API_KEY=YOUR_API_KEY
     image: gpt-engineer
     volumes:
       - ./projects/example:/project

@@ -2,7 +2,7 @@
 Entrypoint for the CLI tool.
 
 This module serves as the entry point for a command-line interface (CLI) tool.
-It is designed to interact with OpenAI's language models.
+It is designed to interact with Mistral AI's language models.
 The module provides functionality to:
 - Load necessary environment variables,
 - Configure various parameters for the AI interaction,
@@ -10,7 +10,7 @@ The module provides functionality to:
 
 Main Functionality
 ------------------
-- Load environment variables required for OpenAI API interaction.
+- Load environment variables required for Mistral AI API interaction.
 - Parse user-specified parameters for project configuration and AI behavior.
 - Facilitate interaction with AI models, databases, and archival processes.
 
@@ -20,9 +20,8 @@ None
 
 Notes
 -----
-- The `OPENAI_API_KEY` must be set in the environment or provided in a `.env` file within the working directory.
+- The `MISTRAL_API_KEY` must be set in the environment or provided in a `.env` file within the working directory.
 - The default project path is `projects/example`.
-- When using the `azure_endpoint` parameter, provide the Azure OpenAI service endpoint URL.
 """
 
 import difflib
@@ -35,7 +34,6 @@ import sys
 
 from pathlib import Path
 
-import openai
 import typer
 
 from dotenv import load_dotenv
@@ -70,24 +68,19 @@ app = typer.Typer(
 
 def load_env_if_needed():
     """
-    Load environment variables if the OPENAI_API_KEY is not already set.
+    Load environment variables if the MISTRAL_API_KEY is not already set.
 
-    This function checks if the OPENAI_API_KEY environment variable is set,
+    This function checks if the MISTRAL_API_KEY environment variable is set,
     and if not, it attempts to load it from a .env file in the current working
-    directory. It then sets the openai.api_key for use in the application.
+    directory. It then sets the mistral.api_key for use in the application.
     """
     # We have all these checks for legacy reasons...
-    if os.getenv("OPENAI_API_KEY") is None:
+    if os.getenv("MISTRAL_API_KEY") is None:
         load_dotenv()
-    if os.getenv("OPENAI_API_KEY") is None:
+    if os.getenv("MISTRAL_API_KEY") is None:
         load_dotenv(dotenv_path=os.path.join(os.getcwd(), ".env"))
 
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-
-    if os.getenv("ANTHROPIC_API_KEY") is None:
-        load_dotenv()
-    if os.getenv("ANTHROPIC_API_KEY") is None:
-        load_dotenv(dotenv_path=os.path.join(os.getcwd(), ".env"))
+    mistral.api_key = os.getenv("MISTRAL_API_KEY")
 
 
 def concatenate_paths(base_path, sub_path):
@@ -281,7 +274,7 @@ def format_installed_packages(packages):
 def main(
     project_path: str = typer.Argument(".", help="path"),
     model: str = typer.Option(
-        os.environ.get("MODEL_NAME", "gpt-4o"), "--model", "-m", help="model id string"
+        os.environ.get("MODEL_NAME", "mistral-large-latest"), "--model", "-m", help="model id string"
     ),
     temperature: float = typer.Option(
         0.1,
@@ -312,13 +305,6 @@ def main(
         "--self-heal",
         "-sh",
         help="Self-heal mode - fix the code by itself when it fails.",
-    ),
-    azure_endpoint: str = typer.Option(
-        "",
-        "--azure",
-        "-a",
-        help="""Endpoint for your Azure OpenAI Service (https://xx.openai.azure.com).
-            In that case, the given model is the deployment name chosen in the Azure AI Studio.""",
     ),
     use_custom_preprompts: bool = typer.Option(
         False,
@@ -402,8 +388,6 @@ def main(
         Flag indicating whether to discuss specifications with AI before implementation.
     self_heal_mode : bool
         Flag indicating whether to enable self-healing mode.
-    azure_endpoint : str
-        The endpoint for Azure OpenAI services.
     use_custom_preprompts : bool
         Flag indicating whether to use custom preprompts.
     prompt_file : str
@@ -461,7 +445,6 @@ def main(
         ai = AI(
             model_name=model,
             temperature=temperature,
-            azure_endpoint=azure_endpoint,
         )
 
     path = Path(project_path)
