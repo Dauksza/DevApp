@@ -1,21 +1,14 @@
 import os
 
-from openai import OpenAI
+from mistral_ai import MistralAI
 
-client = OpenAI(
-    base_url=os.getenv("OPENAI_API_BASE"), api_key=os.getenv("OPENAI_API_KEY")
-)
+client = MistralAI(api_key=os.getenv("MISTRAL_API_KEY"))
 
-response = client.chat.completions.create(
-    model=os.getenv("MODEL_NAME"),
-    messages=[
-        {
-            "role": "user",
-            "content": "Provide me with only the code for a simple python function that sums two numbers.",
-        },
-    ],
+response = client.generate(
+    model="mistral-large-latest",
+    prompt="Provide me with only the code for a simple python function that sums two numbers.",
     temperature=0.7,
     max_tokens=200,
 )
 
-print(response.choices[0].message.content)
+print(response['choices'][0]['text'])

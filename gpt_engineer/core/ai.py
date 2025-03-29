@@ -35,8 +35,7 @@ from langchain.schema import (
     messages_from_dict,
     messages_to_dict,
 )
-from langchain_anthropic import ChatAnthropic
-from langchain_openai import AzureChatOpenAI, ChatOpenAI
+from mistral_ai import MistralAI
 
 from gpt_engineer.core.token_usage import TokenUsageLog
 
@@ -87,7 +86,7 @@ class AI:
 
     def __init__(
         self,
-        model_name="gpt-4-turbo",
+        model_name="mistral-large-latest",
         temperature=0.1,
         azure_endpoint=None,
         streaming=True,
@@ -99,7 +98,7 @@ class AI:
         Parameters
         ----------
         model_name : str, optional
-            The name of the model to use, by default "gpt-4".
+            The name of the model to use, by default "mistral-large-latest".
         temperature : float, optional
             The temperature to use for the model, by default 0.1.
         """
@@ -109,8 +108,7 @@ class AI:
         self.streaming = streaming
         self.vision = (
             ("vision-preview" in model_name)
-            or ("gpt-4-turbo" in model_name and "preview" not in model_name)
-            or ("claude" in model_name)
+            or ("mistral-large-latest" in model_name and "preview" not in model_name)
         )
         self.llm = self._create_chat_model()
         self.token_usage_log = TokenUsageLog(model_name)
@@ -354,8 +352,8 @@ class AI:
                 streaming=self.streaming,
                 callbacks=[StreamingStdOutCallbackHandler()],
             )
-        elif "claude" in self.model_name:
-            return ChatAnthropic(
+        elif "mistral" in self.model_name:
+            return MistralAI(
                 model=self.model_name,
                 temperature=self.temperature,
                 callbacks=[StreamingStdOutCallbackHandler()],
